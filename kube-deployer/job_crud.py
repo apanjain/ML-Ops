@@ -3,6 +3,7 @@ Creates, updates, and deletes a job object.
 """
 
 import logging
+import time
 import os
 from time import sleep
 
@@ -16,6 +17,8 @@ ML_IMAGE_LOCATION = os.environ.get('ML_IMAGE_LOCATION', 'hello-world')
 def create_job_object(train_file_location='train.py', user='root'):
     with open(os.path.join(os.path.dirname(__file__), "ml-job.yaml")) as f:
         job = yaml.safe_load(f)
+        job['metadata']['name'] = '{}{}{}'.format(
+            job['metadata']['name'], user, time.time())
         job['spec']['template']['spec']['containers'][0]['image'] = ML_IMAGE_LOCATION
         job['spec']['template']['spec']['containers'][0]['env'].extend([{
             'name': 'train_file_location',
