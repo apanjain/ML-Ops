@@ -13,15 +13,17 @@ from kubernetes import client
 ML_IMAGE_LOCATION = os.environ.get('ML_IMAGE_LOCATION', 'hello-world')
 
 
-def create_job_object(train_file_location='train.py', model_dump_location='tmp'):
+def create_job_object(train_file_location='train.py', user='root'):
     with open(os.path.join(os.path.dirname(__file__), "ml-job.yaml")) as f:
         job = yaml.safe_load(f)
         job['spec']['template']['spec']['containers'][0]['image'] = ML_IMAGE_LOCATION
-        job['spec']['template']['spec']['containers'][0]['env'].append({
-            'train_file_location': train_file_location,
-            'model_dump_location': model_dump_location
-        })
-        # print(job)
+        job['spec']['template']['spec']['containers'][0]['env'].extend([{
+            'name': 'train_file_location',
+            'value': train_file_location
+        }, {
+            'name': 'user',
+            'value': user
+        }])
     return job
 
 
@@ -43,7 +45,7 @@ def get_job_status(api_instance, job):
             job_completed = True
         if api_response.status.succeeded:
             delete()
-        sleep(10)
+        sleep(6)
         logging.info("Job status='{}'".format(str(api_response.status)))
 
 
@@ -57,9 +59,10 @@ def delete_job(api_instance, job):
     logging.info("Job deleted. status='{}'".format(str(api_response.status)))
 
 
-def create(train_file_location, model_dump_location):
+def create(train_file_location='train.py', user='root'):
     batch_v1 = client.BatchV1Api()
-    job = create_job_object(train_file_location, model_dump_location)
+    job = create_job_object(
+        train_file_location, user)
     create_job(batch_v1, job)
     return 'Created'
 

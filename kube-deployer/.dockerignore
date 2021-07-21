@@ -7,3 +7,5 @@ env
 __pycache__
 kube-crud-deployment.yaml
 .vscode
+env-list
+run.sh
