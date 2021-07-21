@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gke-kube-crud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kube-crud
+  template:
+    metadata:
+      labels:
+        app: kube-crud
+    spec:
+      containers:
+        - name: kube-crud-app
+          # Replace LOCATION_TO_KUBECRUD_IMAGE with kubecrud image location
+          image: LOCATION_TO_KUBECRUD_IMAGE # e.g. gcr.io/$GCLOUD_PROJECT/gke-kube-crud:latest
+          # This app listens on port 8080 for web traffic by default.
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            - name: HELLOWORLD_IMAGE_LOCATION
+              value: HELLOWORLD_IMAGE_LOCATION_HERE # e.g. gcr.io/$GCLOUD_PROJECT/helloworld-gke:latest
+            - name: UPDATED_IMAGE_LOCATION
+              value: UPDATED_IMAGE_LOCATION_HERE # e.g. gcr.io/$GCLOUD_PROJECT/helloworld-gke:v1
+            - name: KAFKA_BROKER_IP
+              value: KAFKA_BROKER_IP
+            - name: KAFKA_BROKER_PORT
+              value: KAFKA_BROKER_PORT
+            - name: KAFKA_TOPIC
+              value: KAFKA_TOPIC
+            - name: KAFKA_GROUP_ID
+              value: KAFKA_GROUP_ID
+            - name: ML_IMAGE_LOCATION
+              value: ML_IMAGE_LOCATION
+          volumeMounts:
+            - mountPath: "/mnt/c"
+              name: test-volume    
+      volumes:
+        - name: test-volume
+          # This GCE PD must already exist.
+          persistentVolumeClaim:
+            claimName: myclaim        
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: deployment-manager
+rules:
+  - apiGroups: ["", "extensions", "apps", "batch"]
+    resources: ["deployments", "replicasets", "pods", "jobs", "jobs/status"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: deployment-manager
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: deployment-manager
+  apiGroup: rbac.authorization.k8s.io
