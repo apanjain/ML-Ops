@@ -17,6 +17,7 @@ TRAIN_FILE_LOCATION = os.environ.get('TRAIN_FILE_LOCATION', 'uploads/train.py')
 
 # print(ML_USERNAME)
 
+
 def delivery_report(err, msg):
     if err:
         print(f"Message delivery failed :{str(err)}")
@@ -36,8 +37,8 @@ def run_producer():
                   'acks': '-1',  # all
                   'partitioner': 'consistent_random'})
 
-    msg_value = {"command": 'create', "train_file_location": TRAIN_FILE_LOCATION,
-                 "username": ML_USERNAME, }
+    msg_value = {"train_file_location": TRAIN_FILE_LOCATION,
+                 "ml_username": ML_USERNAME, }
     msg_header = {"source": b"check"}
     try:
         p.poll(timeout=0)
