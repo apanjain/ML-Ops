@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-pred
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ml-pred
+  template:
+    metadata:
+      labels:
+        app: ml-pred
+    spec:
+      containers:
+        - name: ml-model-predictor
+          image: ML_PREDICTION_IMAGE
+          env:
+            name: PORT
+            value: 8080
+          volumeMounts:
+            - mountPath: "/mnt/c"
+              name: ftp-volume
+          ports:
+            - containerPort: 8080
+      volumes:
+        - name: ftp-volume
+          # This GCE PD must already exist.
+          persistentVolumeClaim:
+            claimName: FTP_SERVER_CLAIM_NAME
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pred-svc
+  labels:
+    name: pred-svc-label
+spec:
+  type: LoadBalancer
+  selector:
+    app: ml-pred
+  ports:
+    - port: 80
+      targetPort: 8080
