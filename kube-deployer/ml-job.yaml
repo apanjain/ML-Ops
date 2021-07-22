@@ -17,4 +17,4 @@ spec:
         - name: test-volume
           # This GCE PD must already exist.
           persistentVolumeClaim:
-            claimName: myclaim
+            claimName: data-claim-ftp

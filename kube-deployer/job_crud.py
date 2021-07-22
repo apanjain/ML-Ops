@@ -20,13 +20,13 @@ def create_job_object(train_file_location='train.py', user='root'):
         job['metadata']['name'] = '{}{}{}'.format(
             job['metadata']['name'], user, time.time())
         job['spec']['template']['spec']['containers'][0]['image'] = ML_IMAGE_LOCATION
-        job['spec']['template']['spec']['containers'][0]['env'].extend([{
+        job['spec']['template']['spec']['containers'][0]['env'] = [{
             'name': 'train_file_location',
             'value': train_file_location
         }, {
-            'name': 'user',
+            'name': 'ml_user',
             'value': user
-        }])
+        }]
     return job
 
 
@@ -46,8 +46,8 @@ def get_job_status(api_instance, job):
             namespace="default")
         if api_response.status.succeeded is not None or api_response.status.failed is not None:
             job_completed = True
-        if api_response.status.succeeded:
-            delete()
+        # if api_response.status.succeeded:
+            # delete(job)
         sleep(6)
         logging.info("Job status='{}'".format(str(api_response.status)))
 
@@ -70,8 +70,7 @@ def create(train_file_location='train.py', user='root'):
     return 'Created'
 
 
-def delete():
+def delete(job):
     batch_v1 = client.BatchV1Api()
-    job = create_job_object()
     delete_job(batch_v1, job)
     return 'deleted'

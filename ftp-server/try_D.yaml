@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: try-d0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tryd0
+  template:
+    metadata:
+      labels:
+        app: tryd0
+    spec:
+      containers:
+      - name: try-c
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+        env:
+        volumeMounts:
+        - mountPath: "/uploads1"
+          name: data-ftp
+      volumes:
+        - name: data-ftp
+          persistentVolumeClaim:
+            claimName: data-claim-ftp

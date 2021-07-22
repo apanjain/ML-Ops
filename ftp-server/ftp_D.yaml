@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: data-ftp
+spec:
+  storageClassName: "mystcls"
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteOnce
+  claimRef:
+    namespace: default
+    name: data-claim-ftp
+  gcePersistentDisk:
+    pdName: ftp-server
+    fsType: ext4
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-claim-ftp
+spec:
+  storageClassName: "mystcls"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ftp-configmap
+data:
+  # property-like keys; each key maps to a simple value
+  users.conf: |
+    mk1:demo:1020:100:/uploads
+    mk2:demo:1021:100:/uploads
+    mk3:demo:1022:100:/uploads
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ftp-d0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ftpd0
+  template:
+    metadata:
+      labels:
+        app: ftpd0
+    spec:
+      containers:
+        - name: ftp-c
+          image: atmoz/sftp
+          ports:
+            - containerPort: 22
+          volumeMounts:
+            - mountPath: "/etc/sftp"
+              name: config
+              readOnly: true
+            - mountPath: "/home/"
+              name: data-ftp
+            - mountPath: "/etc/ssh/ssh_host_ed25519_key"
+              name: data-ftp
+              subPath: "ssh-keys/ssh_host_ed25519_key"
+            - mountPath: "/etc/ssh/ssh_host_rsa_key"
+              name: data-ftp
+              subPath: "ssh-keys/ssh_host_rsa_key"
+      volumes:
+        - name: config
+          configMap:
+            name: ftp-configmap
+            items:
+              - key: "users.conf"
+                path: "users.conf"
+        - name: data-ftp
+          persistentVolumeClaim:
+            claimName: data-claim-ftp
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ftp-service
+  labels:
+    name: ftp-app
+spec:
+  ports:
+    - port: 22
+      name: ftp-port
+      protocol: TCP
+  selector:
+    app: ftpd0
+  type: LoadBalancer
