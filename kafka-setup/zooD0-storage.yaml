@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zookeeper-d0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zookeeper-0
+  template:
+    metadata:
+      labels:
+        app: zookeeper-0
+    spec:
+      securityContext:
+        fsGroup: 1001
+      containers:
+        - name: zoo0
+          image: ZOO_IMAGE_LOCATION
+          volumeMounts:
+            - mountPath: "/bitnami/zookeeper/data"
+              name: data-zoo
+              subPath: zookeeper-data
+          ports:
+            - containerPort: 2181
+            - containerPort: 2182
+          env:
+            - name: ZOO_TLS_CLIENT_ENABLE
+              value: "true"
+            - name: ZOO_TLS_PORT_NUMBER
+              value: "2182"
+            - name: ZOO_TLS_CLIENT_KEYSTORE_FILE
+              value: /bitnami/zookeeper/certs/zookeeper.keystore.jks
+            - name: ZOO_TLS_CLIENT_KEYSTORE_PASSWORD
+              value: ZOO_TLS_CLIENT_KEYSTORE_PASSWORD
+            - name: ZOO_TLS_CLIENT_TRUSTSTORE_FILE
+              value: /bitnami/zookeeper/certs/zookeeper.truststore.jks
+            - name: ZOO_TLS_CLIENT_TRUSTSTORE_PASSWORD
+              value: ZOO_TLS_CLIENT_TRUSTSTORE_PASSWORD
+            - name: ZOO_TLS_CLIENT_AUTH
+              value: need
+            - name: ZOO_ENABLE_AUTH
+              value: "yes"
+      volumes:
+        - name: data-zoo
+          persistentVolumeClaim:
+            claimName: PV_CLAIM_NAME_ZOO
