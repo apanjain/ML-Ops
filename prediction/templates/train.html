@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Training</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+
+    <script type="text/javascript" src="{{url_for('static', filename='autoUpdate.js')}}"></script>
+
+  </head>
+  <body>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+    <script type="text/javascript">
+      var ids=1;
+
+      function handleSubmit(e){
+          // console.log(ids);
+        e.preventDefault();
+        var username=document.getElementById('username').value;
+        var url="/train/"+username+"?";
+        var tfn=document.getElementById("tfn").value;
+        var tfl=document.getElementById("tfl").value;
+        url+="train_filename="+tfn+"&train_filelocation="+tfl;
+        console.log(url);
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+            document.getElementById("demo").innerHTML = this.responseText;
+            checkLogs(username);
+        }
+        xhttp.open("GET", url);
+        xhttp.send();
+      }
+    </script>
+    <div class="testbox">
+      <form id="myForm">
+        <div id="main">
+         <div class="banner">
+        <img style="max-height: 320px;opacity: 0.95;"src="../static/image/train_bg1.jpg">
+        <h1>TRAINING</h1>
+        </div>
+        <div class="colums">
+          <div class="item">
+            <label > Username : <span>*</span></label>
+            <input id="username" type="text" name="user" required/>
+          </div>
+        </div>
+        <div class="colums">
+          <div class="item">
+            <label > Training File Location</label>
+            <input id="tfl" type="text" name="tfl" value=""/>
+          </div>
+          <div class="item">
+            <label > Training File name (with extension .py)</label>
+            <input id="tfn" type="text" name="tfn" value="train.py"/>
+          </div>
+        </div>
+        
+        
+        <div class="btn-block">
+          <input class="btns" type="submit" value="Submit"/>
+        </div>
+        <br>
+        <label><p id="demo" style="font-size: large;font-weight: bold;"></p></label>
+      </form>
+      <br>
+      <div id="liveData" style="background-color: lightgreen;border-radius: 4px;color:black;min-height: 100px;margin:auto;padding: 20px 20px"><h2>Training Logs will be printed here!</h2></div>
+    </div>
+    
+  </body>
+  <script>
+    var form = document.getElementById("myForm");
+    form.addEventListener("submit", handleSubmit);
+  </script>
+</html>

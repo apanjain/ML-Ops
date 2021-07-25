@@ -14,7 +14,7 @@ from kubernetes import client
 ML_IMAGE_LOCATION = os.environ.get('ML_IMAGE_LOCATION', 'hello-world')
 
 
-def create_job_object(train_file_location='train.py', user='root'):
+def create_job_object(train_file_location='.', train_file_name='train.py', user='root'):
     with open(os.path.join(os.path.dirname(__file__), "ml-job.yaml")) as f:
         job = yaml.safe_load(f)
         job['metadata']['name'] = '{}{}{}'.format(
@@ -23,6 +23,9 @@ def create_job_object(train_file_location='train.py', user='root'):
         job['spec']['template']['spec']['containers'][0]['env'] = [{
             'name': 'train_file_location',
             'value': train_file_location
+        }, {
+            'name': 'train_file_name',
+            'value': train_file_name
         }, {
             'name': 'ml_user',
             'value': user
@@ -46,10 +49,9 @@ def get_job_status(api_instance, job):
             namespace="default")
         if api_response.status.succeeded is not None or api_response.status.failed is not None:
             job_completed = True
-        # if api_response.status.succeeded:
-            # delete(job)
+            delete(job)
         sleep(6)
-        logging.info("Job status='{}'".format(str(api_response.status)))
+        logging.info("Job status='{}'\n".format(str(api_response.status)))
 
 
 def delete_job(api_instance, job):
@@ -59,13 +61,15 @@ def delete_job(api_instance, job):
         body=client.V1DeleteOptions(
             propagation_policy='Foreground',
             grace_period_seconds=5))
-    logging.info("Job deleted. status='{}'".format(str(api_response.status)))
+    logging.info("Job deleted. status='{}'\n".format(str(api_response.status)))
 
 
-def create(train_file_location='train.py', user='root'):
+def create(train_file_location='.', train_file_name='train.py', user='root'):
     batch_v1 = client.BatchV1Api()
+    if(train_file_location == ''):
+        train_file_location = '.'
     job = create_job_object(
-        train_file_location, user)
+        train_file_location, train_file_name, user)
     create_job(batch_v1, job)
     return 'Created'
 

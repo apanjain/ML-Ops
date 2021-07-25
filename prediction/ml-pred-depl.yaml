@@ -16,8 +16,9 @@ spec:
         - name: ml-model-predictor
           image: ML_PREDICTION_IMAGE
           env:
-            name: PORT
-            value: 8080
+            - name: PORT
+              value: "8080"
+            - name: 
           volumeMounts:
             - mountPath: "/mnt/c"
               name: ftp-volume

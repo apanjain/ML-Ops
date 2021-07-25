@@ -1,11 +1,13 @@
-from posix import environ
 from confluent_kafka import Producer
 import os
 import json
 
 from dotenv import load_dotenv
 
-load_dotenv()
+DEBUG = os.environ.get('MODE', 'DEV') != 'PROD'
+
+if DEBUG:
+    load_dotenv()
 
 KAFKA_BOOTSTRAP_SERVERS = os.environ.get(
     'KAFKA_BOOTSTRAP_SERVERS', '0.0.0.0:9092')
@@ -27,7 +29,7 @@ def delivery_report(err, msg):
         print(f"msg_sent is : {msg.value().decode('utf-8')}")
 
 
-def run_producer():
+def run_producer(msg_value):
     p = Producer({'bootstrap.servers': KAFKA_BOOTSTRAP_SERVERS,
                   'security.protocol': 'sasl_ssl',
                   'sasl.mechanism': 'SCRAM-SHA-512',
@@ -37,8 +39,6 @@ def run_producer():
                   'acks': '-1',  # all
                   'partitioner': 'consistent_random'})
 
-    msg_value = {"train_file_location": TRAIN_FILE_LOCATION,
-                 "ml_username": ML_USERNAME, }
     msg_header = {"source": b"check"}
     try:
         p.poll(timeout=0)
@@ -51,4 +51,6 @@ def run_producer():
 
 
 if __name__ == '__main__':
-    run_producer()
+    message = {"train_file_location": TRAIN_FILE_LOCATION,
+               "ml_username": ML_USERNAME, }
+    run_producer(message)

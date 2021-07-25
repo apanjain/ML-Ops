@@ -56,10 +56,11 @@ def main():
                 message = json.loads(msg.value().decode("utf-8"))
                 logging.info(json.dumps(message))
                 train_file_location = message.get(
-                    'train_file_location', 'train.py')
+                    'train_file_location', '')
+                train_file_name = message.get('train_file_name', 'train.py')
                 ml_username = message.get('ml_username', 'root')
                 job_crud.create(
-                    train_file_location=train_file_location, user=ml_username)
+                    train_file_location=train_file_location, train_file_name=train_file_name, user=ml_username)
             except Exception as e:
                 logging.error(str(e))
     except Exception as e:
