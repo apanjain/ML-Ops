@@ -20,15 +20,14 @@
           // console.log(ids);
         e.preventDefault();
         var username=document.getElementById('username').value;
-        var url="/train/"+username+"?";
-        var tfn=document.getElementById("tfn").value;
-        var tfl=document.getElementById("tfl").value;
-        url+="train_filename="+tfn+"&train_filelocation="+tfl;
+        var tfn=document.getElementById("tfn").value.trim();
+        var tfl=document.getElementById("tfl").value.trim();
+        var url=`/train/${encodeURIComponent(username.trim())}?train_filename=${encodeURIComponent(tfn)}&train_filelocation=${encodeURIComponent(tfl)}`;
         console.log(url);
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function() {
             document.getElementById("demo").innerHTML = this.responseText;
-            checkLogs(username);
+            checkLogs(username, tfl);
         }
         xhttp.open("GET", url);
         xhttp.send();

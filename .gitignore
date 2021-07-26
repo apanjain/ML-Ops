@@ -5,3 +5,4 @@ cert
 *.pyo
 *.pyd
 __pycache__
+local

@@ -1,4 +1,4 @@
-function checkLogs(user) {
+function checkLogs(user, train_filelocation) {
   var xhr = null;
 
   getXmlHttpRequestObject = function () {
@@ -13,7 +13,8 @@ function checkLogs(user) {
     var now = new Date();
     // Date string is appended as a query with live data
     // for not to use the cached version
-    var url = "/logs/" + user + "?" + now.getTime();
+    var url = `/logs/${user}/?&train_filelocation=${train_filelocation}&${now}`;
+    console.log(url);
     xhr = getXmlHttpRequestObject();
     xhr.onreadystatechange = evenHandler;
     // asynchronous requests

@@ -85,7 +85,7 @@ def train_msg(user):
                 train_filename = arguments.get("train_filename")
 
             if(arguments.get("train_filelocation") == None):
-                train_filelocation = ""
+                train_filelocation = "."
             else:
                 train_filelocation = arguments.get("train_filelocation")
 
@@ -112,13 +112,17 @@ def train_msg(user):
 @app.route("/logs/<user>/")
 def livefeed(user):
     try:
-        pred_filepath = os.path.join(
-            SHARED_STORAGE_MOUNT_POINT, user, "uploads", "training.log")
-        with open(pred_filepath, 'r') as file:
+        arguments = flask.request.args
+        train_filelocation = "." if arguments.get(
+            "train_filelocation") == None else arguments.get("train_filelocation")
+        logfile_path = os.path.join(
+            SHARED_STORAGE_MOUNT_POINT, user, "uploads", train_filelocation, "training.log")
+        with open(logfile_path, 'r') as file:
             string = file.read()
 
-        string = "<h2>Training Logs will be printed here!</h2>" + \
-            "<p>"+string.replace("\n", "</p><p>")+"</p>"
+        string = """
+        <h2>Training Logs will be printed here!</h2>
+        <p>{}</p>""".format(string.replace("\n", "</p><p>"))
         # print(string)
         return string
     except Exception as e:

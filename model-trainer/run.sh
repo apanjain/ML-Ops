@@ -18,7 +18,6 @@ else
     echo FAIL
     exit 1
 fi
-
 echo "Activating Environment"
 activate () {
   . ./env/bin/activate
@@ -39,9 +38,9 @@ else
     echo FAIL
     exit 1
 fi
-
+cd "$1"
 echo "Executing $1/$2"
-python3 "$1/$2"
+python3 "$2"
 if [ $? -eq 0 ]; then
     echo OK
 else
