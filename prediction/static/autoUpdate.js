@@ -1,38 +1,31 @@
 function checkLogs(user, train_filelocation) {
-  var xhr = null;
-
-  getXmlHttpRequestObject = function () {
-    if (!xhr) {
-      // Create a new XMLHttpRequest object
-      xhr = new XMLHttpRequest();
-    }
-    return xhr;
-  };
-
+  var updateLoop = null;
   updateLiveData = function () {
     var now = new Date();
-    // Date string is appended as a query with live data
-    // for not to use the cached version
     var url = `/logs/${user}/?&train_filelocation=${train_filelocation}&${now}`;
-    console.log(url);
-    xhr = getXmlHttpRequestObject();
-    xhr.onreadystatechange = evenHandler;
-    // asynchronous requests
-    xhr.open("GET", url, true);
-    // Send the request over the network
-    xhr.send(null);
+    console.log("updating...");
+    fetch(url)
+      .then((res) => {
+        res.text().then(function (text) {
+          dataDiv = document.getElementById("liveData");
+          dataDiv.innerHTML = text;
+          // Checkpoint for terminating updates
+          if (
+            text.length > 13 &&
+            text.substring(text.length - 13) === "!!</p><p></p>"
+          ) {
+            console.log("terminating...");
+            clearInterval(updateLoop);
+          }
+          window.scrollTo(0, document.body.scrollHeight);
+        });
+      })
+      .catch((err) => {
+        console.log("terminating...");
+        clearInterval(updateLoop);
+        console.log(err);
+      });
   };
-
   updateLiveData();
-
-  function evenHandler() {
-    // Check response is ready or not
-    if (xhr.readyState == 4 && xhr.status == 200) {
-      dataDiv = document.getElementById("liveData");
-      // Set current data text
-      dataDiv.innerHTML = xhr.responseText;
-      // Update the live data every 1 sec
-      setTimeout(updateLiveData, 1000);
-    }
-  }
+  updateLoop = setInterval(updateLiveData, 1000);
 }

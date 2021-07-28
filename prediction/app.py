@@ -53,7 +53,6 @@ def predict(user):
             env_path = os.path.join(
                 SHARED_STORAGE_MOUNT_POINT, user, "uploads/env/lib/python3.9/site-packages")
             sys.path.append(env_path)
-            print(sys.path)
 
             return_string = json.dumps(imp.load_source(
                 pred_filename, pred_filepath).predict(arguments))
@@ -89,6 +88,14 @@ def train_msg(user):
             else:
                 train_filelocation = arguments.get("train_filelocation")
 
+            # clear the existing logfile
+            logfile_path = os.path.join(
+                SHARED_STORAGE_MOUNT_POINT, user, "uploads", train_filelocation, "training.log")
+            try:
+                with open(logfile_path, 'w') as fp:
+                    pass
+            except Exception as e:
+                print(e)
             # parameters for kafka message
             message = {
                 'ml_username': user,
@@ -122,6 +129,7 @@ def livefeed(user):
 
         string = """
         <h2>Training Logs will be printed here!</h2>
+        <hr />
         <p>{}</p>""".format(string.replace("\n", "</p><p>"))
         # print(string)
         return string

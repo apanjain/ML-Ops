@@ -2,72 +2,175 @@
 <html>
   <head>
     <title>Training</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+      integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css" />
 
-    <script type="text/javascript" src="{{url_for('static', filename='autoUpdate.js')}}"></script>
+    <script
+      type="text/javascript"
+      src="{{url_for('static', filename='autoUpdate.js')}}"
+    ></script>
 
+    <!-- CSS only -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <!-- JavaScript Bundle with Popper -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <script type="text/javascript">
-      var ids=1;
-
-      function handleSubmit(e){
-          // console.log(ids);
+      function handleSubmit(e) {
         e.preventDefault();
-        var username=document.getElementById('username').value;
-        var tfn=document.getElementById("tfn").value.trim();
-        var tfl=document.getElementById("tfl").value.trim();
-        var url=`/train/${encodeURIComponent(username.trim())}?train_filename=${encodeURIComponent(tfn)}&train_filelocation=${encodeURIComponent(tfl)}`;
+        var username = document.getElementById("username").value.trim();
+        var tfn = document.getElementById("tfn").value.trim();
+        var tfl = document.getElementById("tfl").value.trim();
+        var url = `/train/${encodeURIComponent(
+          username
+        )}?train_filename=${encodeURIComponent(
+          tfn
+        )}&train_filelocation=${encodeURIComponent(tfl)}`;
         console.log(url);
-        const xhttp = new XMLHttpRequest();
-        xhttp.onload = function() {
-            document.getElementById("demo").innerHTML = this.responseText;
+        fetch(url)
+          .then((res) => {
             checkLogs(username, tfl);
-        }
-        xhttp.open("GET", url);
-        xhttp.send();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
     </script>
-    <div class="testbox">
-      <form id="myForm">
-        <div id="main">
-         <div class="banner">
-        <img style="max-height: 320px;opacity: 0.95;"src="../static/image/train_bg1.jpg">
-        <h1>TRAINING</h1>
-        </div>
-        <div class="colums">
-          <div class="item">
-            <label > Username : <span>*</span></label>
-            <input id="username" type="text" name="user" required/>
+    <nav class="nav justify-content-center" style="background: #0c0404">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a
+            class="nav-link active"
+            aria-current="page"
+            href="training"
+            aria-disabled="true"
+            >Train</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" style="color: white" href="prediction"
+            >Predict
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <div
+      class="body-parent"
+      style="
+        min-height: 100vh;
+        /* background: linear-gradient(#f6fbfd, #fff); */
+        background: rgb(238, 174, 202);
+        background: radial-gradient(
+          circle,
+          rgba(0, 0, 0, 1) 0%,
+          rgba(148, 187, 233, 1) 100%
+        );
+        color: white;
+      "
+    >
+      <!-- <hr /> -->
+      <br />
+      <h2 style="text-align: center">ML-Ops (TRAIN)</h2>
+      <br />
+      <br />
+      <div class="container-sm" style="padding-bottom: 30px">
+        <form id="myForm">
+          <div class="row mb-3">
+            <label
+              for="username"
+              class="col-sm-2 col-form-label"
+              style="font-size: 18px"
+              >Username <span class="color-red">*</span></label
+            >
+            <div class="col-sm-10">
+              <input
+                type="text"
+                class="form-control"
+                id="username"
+                placeholder="e.g. john_doe"
+                required
+              />
+            </div>
           </div>
-        </div>
-        <div class="colums">
-          <div class="item">
-            <label > Training File Location</label>
-            <input id="tfl" type="text" name="tfl" value=""/>
+          <div class="row mb-3">
+            <label
+              for="tfl"
+              class="col-sm-2 col-form-label"
+              style="font-size: 18px"
+              >Training File Location</label
+            >
+            <div class="col-sm-10">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="some/subdirectory"
+                id="tfl"
+              />
+            </div>
           </div>
-          <div class="item">
-            <label > Training File name (with extension .py)</label>
-            <input id="tfn" type="text" name="tfn" value="train.py"/>
+          <div class="row mb-3">
+            <label
+              for="tfn"
+              class="col-sm-2 col-form-label"
+              style="font-size: 18px"
+              >Training File name
+              <span class="color-red">*</span>
+            </label>
+            <div class="col-sm-10">
+              <input
+                type="text"
+                class="form-control"
+                id="tfn"
+                placeholder="train.py"
+                required
+              />
+            </div>
           </div>
+          <div style="text-align: center">
+            <button type="submit" class="btn btn-outline-info btn-lg">
+              Start Training
+            </button>
+          </div>
+        </form>
+        <br />
+        <div
+          id="liveData"
+          style="
+            /* background-color: lightgreen; */
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+            /* color: black; */
+            color: white;
+            min-height: 100px;
+            margin: auto;
+            padding: 20px 20px;
+          "
+        >
+          <h2>Training Logs will be printed here!</h2>
         </div>
-        
-        
-        <div class="btn-block">
-          <input class="btns" type="submit" value="Submit"/>
-        </div>
-        <br>
-        <label><p id="demo" style="font-size: large;font-weight: bold;"></p></label>
-      </form>
-      <br>
-      <div id="liveData" style="background-color: lightgreen;border-radius: 4px;color:black;min-height: 100px;margin:auto;padding: 20px 20px"><h2>Training Logs will be printed here!</h2></div>
+      </div>
     </div>
-    
   </body>
   <script>
     var form = document.getElementById("myForm");

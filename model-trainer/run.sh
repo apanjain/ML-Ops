@@ -4,7 +4,7 @@ cd /mnt/c/"$3"/uploads
 if [ $? -eq 0 ]; then
     echo OK
 else
-    echo FAIL
+    echo "FAIL!!"
 fi
 
 # redirect stdout/stderr to a file
@@ -15,7 +15,7 @@ python3 -m venv env
 if [ $? -eq 0 ]; then
     echo OK
 else
-    echo FAIL
+    echo "FAIL!!"
     exit 1
 fi
 echo "Activating Environment"
@@ -26,7 +26,7 @@ activate
 if [ $? -eq 0 ]; then
     echo OK
 else
-    echo FAIL
+    echo "FAIL!!"
     exit 1
 fi
 
@@ -35,7 +35,7 @@ pip3 install -r requirements.txt
 if [ $? -eq 0 ]; then
     echo OK
 else
-    echo FAIL
+    echo "FAIL!!"
     exit 1
 fi
 cd "$1"
@@ -44,7 +44,7 @@ python3 "$2"
 if [ $? -eq 0 ]; then
     echo OK
 else
-    echo FAIL
+    echo "FAIL!!"
     exit 1
 fi
-echo "Training Successful!"
+echo "Training Successful!!"
