@@ -27,7 +27,7 @@ gcloud builds submit --tag gcr.io/$GCLOUD_PROJECT/gke-kube-crud:latest .
   - `KAFKA_TOPIC`
   - `KAFKA_GROUP_ID`
   - `KAFKA_USER`
-  - `KAFKA_USER`
+  - `KAFKA_PASS`
 
 - Also, update the contents of the ca-cert file inside `kube-crud-deployment.yaml` file.  
   (according to your public-key for the kafka Certificate Authority)
