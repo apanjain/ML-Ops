@@ -44,3 +44,18 @@ spec:
       - name: data-broker1
         persistentVolumeClaim:
           claimName: PV_CLAIM_NAME
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-s1
+  labels:
+    name: kafka1
+spec:
+  ports:
+  - port: 9093
+    name: kafka-port
+    protocol: TCP
+  selector:
+    app: kafka1
+  type: LoadBalancer
