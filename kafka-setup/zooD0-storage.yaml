@@ -45,3 +45,22 @@ spec:
         - name: data-zoo
           persistentVolumeClaim:
             claimName: PV_CLAIM_NAME_ZOO
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zoo0
+  labels:
+    app: zookeeper-0
+spec:
+  ports:
+  - name: leader
+    port: 2181
+    protocol: TCP
+  - name: secure
+    port: 2182
+    protocol: TCP
+  selector:
+    app: zookeeper-0
+  type: LoadBalancer
+
