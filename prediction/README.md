@@ -9,7 +9,7 @@
 
 ### Frontend
 
-- Frontend is basically a combination of two forms which can be accessed on `/training` and `prediction` url.
+- Frontend is basically a combination of two forms which can be accessed on `/training` and `/prediction` url.
 - The training form takes three input parameters
   from the user, the `username`, the `training file name` (usually 'train.py') and the `training file location `(usually '.') {relative to the uploads folder in the sftp server for the corresponding user}
 - Once the user hits Train button, they can see the logs generated while training the model on the same page itself.
@@ -18,14 +18,14 @@
 
 ### Backend
 
-- The backend handles the training request recieved from the training form and send a message to the kafka broker for the same.
-- The training logs are fetched using `/logs/<user>` url, by making regular requests until it receives a stop signal.
+- The backend handles the training request recieved from the training form and sends a message to the kafka broker for the same.
 - This is served by the `/train/<user>` url. This method uses the `secure_producer` file to send the message.
+- The training logs are fetched using `/logs/<user>` url, by making regular requests until it receives a stop signal.
 - The backend also handles prediction request received from the prediction from on `/predict/<user>` url.
 - This method leverages the virtual environment created during the training by adding the path for those site-packages in `sys.path` variable.
 - The `predict` function in the prediction file (details about creating such file are mentioned in the test-user section) is then called with the key/value pairs from the request as arguments and the response is then forwarded to the user in the plain text format.
 
-### Setup
+### Setup & Usage
 
 - First create an image from this folder and push it to GCR by executing the following commands
 
@@ -38,7 +38,7 @@ gcloud builds submit --tag gcr.io/$GCLOUD_PROJECT_ID/$ML_PREDICTION_IMAGE
 ```
 
 - Here the `ML_PREDICTION_IMAGE` is the image name.
-- Access the shared storage (persistent disk) of the ftp server, (not by sftp login) and place the file `ca-cert` of the kafka broker somewhere in that storage, this will be used by our `secure_producer`.
+- Access the shared storage (persistent disk) of the ftp server, (not by sftp login) and place the `ca-cert` file of the kafka broker somewhere in that storage, this will be used by our `secure_producer`.
   - One way can be
   ```bash
     kubectl cp <path_to_ca-cert_on_local_machine> <ftp_pod_id>:/mnt/c/<path_to_paste_the_file>
@@ -55,7 +55,7 @@ gcloud builds submit --tag gcr.io/$GCLOUD_PROJECT_ID/$ML_PREDICTION_IMAGE
 kubectl apply -f ./ml-pred-depl.yaml
 ```
 
-- The run the following command to get the external ip of your ml-pred pod (can take upto 1 minute).
+- Then run the following command to get the external ip of your ml-pred pod (can take upto 1 minute).
 
 ```bash
 kubectl get services
