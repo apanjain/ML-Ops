@@ -11,7 +11,7 @@
 
 - `Docker CLI` should be pre-installed on the machine.
 - A directory containing two shell scripts, `run.sh` and `setup.sh`.
-- `setup.sh` will contain all the build-side instructions while creating the image, which will replace the `RUN` commands in the `Dockerfile`. It'll setup the environment which can be directly used after spinning up the container from the image.
+- `setup.sh` will contain all the build-side instructions while creating the image, which will replace the `RUN` commands in the `Dockerfile`. It'll setup the environment which can be directly used by the containers.
 
 - `run.sh` will contain all the commands that will be executed after the container is spun up.
 
