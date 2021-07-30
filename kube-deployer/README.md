@@ -22,10 +22,14 @@ gcloud builds submit --tag gcr.io/$GCLOUD_PROJECT/gke-kube-crud:latest .
   - `LOCATION_TO_KUBECRUD_IMAGE`
   - `HELLOWORLD_IMAGE_LOCATION`
   - `UPDATED_IMAGE_LOCATION`
-  - `KAFKA_BROKER_IP`
-  - `KAFKA_BROKER_PORT`
+  - `ML_IMAGE_LOCATION`
+  - `KAFKA_BOOTSTRAP_SERVERS`
   - `KAFKA_TOPIC`
   - `KAFKA_GROUP_ID`
+  - `KAFKA_USER`
+  - `KAFKA_USER`
+
+- Also, update the contents of the ca-cert file inside `kube-crud-deployment.yaml` file
 
 - Deploy the container on the cluster
 
@@ -50,11 +54,8 @@ kubectl get services
 - Add messages to your kafka topic in the following format
 
 ```
-{'command' : '<CMD>'}
+{'ml_username' : '<username_used_in_ftp>',
+ 'train_file_name' : '<eg. train.py>',
+ 'train_file_location' : '<eg. folder1>'
+}
 ```
-
-- Where `<CMD>` can be
-  - `create`
-  - `restart`
-  - `update`
-  - `delete`
