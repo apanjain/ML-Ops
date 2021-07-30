@@ -18,7 +18,16 @@ spec:
           env:
             - name: PORT
               value: "8080"
-            - name: 
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: ""
+            - name: KAFKA_USER
+              value: ""
+            - name: KAFKA_PASS
+              value: ""
+            - name: KAFKA_TOPIC
+              value: ""
+            - name: CA_CERT_LOCATION
+              value: ""
           volumeMounts:
             - mountPath: "/mnt/c"
               name: ftp-volume

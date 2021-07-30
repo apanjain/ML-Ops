@@ -13,6 +13,7 @@ KAFKA_BOOTSTRAP_SERVERS = os.environ.get(
     'KAFKA_BOOTSTRAP_SERVERS', '0.0.0.0:9092')
 KAFKA_USER = os.environ.get('KAFKA_USER', '')
 KAFKA_PASS = os.environ.get('KAFKA_PASS', '')
+KAFKA_TOPIC = os.environ.get('KAFKA_TOPIC', '')
 CA_CERT_LOCATION = os.environ.get('CA_CERT_LOCATION', '/key-used/ca-cert')
 ML_USERNAME = os.environ.get('ML_USERNAME', 'root')
 TRAIN_FILE_LOCATION = os.environ.get('TRAIN_FILE_LOCATION', 'uploads/train.py')
@@ -42,7 +43,7 @@ def run_producer(msg_value):
     msg_header = {"source": b"check"}
     try:
         p.poll(timeout=0)
-        p.produce(topic='ssl-topic', value=json.dumps(msg_value).encode("utf-8"),
+        p.produce(topic=KAFKA_TOPIC, value=json.dumps(msg_value).encode("utf-8"),
                   headers=msg_header, on_delivery=delivery_report)
     except BufferError as buffer_error:
         print(
