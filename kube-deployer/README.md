@@ -54,7 +54,8 @@ kubectl get services
 - Add messages to your kafka topic in the following format
 
 ```
-{'ml_username' : '<username_used_in_ftp>',
+{
+ 'ml_username' : '<username_used_in_ftp>',
  'train_file_name' : '<eg. train.py>',
  'train_file_location' : '<eg. folder1>'
 }
