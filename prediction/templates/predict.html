@@ -2,133 +2,225 @@
 <html>
   <head>
     <title>Prediction</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css" />
+
+    <!-- CSS only -->
     <link
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
-      integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" type="text/css" href="../static/css/style.css" />
+    <!-- JavaScript Bundle with Popper -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   </head>
   <body>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
     <script type="text/javascript">
-      var ids = 1;
+      var ids = 0;
       function add() {
-        var form = document.getElementById("main");
-        var coldiv = document.createElement("div");
-        coldiv.class = "colums";
-        coldiv.style =
-          "display:flex;justify-content: space-between;flex-direction: row;flex-wrap: wrap;";
-        var div1 = document.createElement("div");
-        div1.class = "item";
-        div1.style = "position:relative;margin:10px 0;width:48%;";
-        var div2 = document.createElement("div");
-        div2.class = "item";
-        div2.style = "position:relative;margin:10px 0;width:48%;";
-        var key = document.createElement("input");
-        var keyl = document.createElement("lable");
-        keyl.innerHTML = "Key  *";
-        key.setAttribute("type", "text");
-        key.setAttribute("id", "key" + ids);
-        key.setAttribute("style", "width: calc(100% - 10px);");
-        var value = document.createElement("input");
-        var valuel = document.createElement("lable");
-        valuel.innerHTML = "Value  *";
-        value.setAttribute("type", "text");
-        value.setAttribute("id", "value" + ids);
-        value.setAttribute("style", "width: calc(100% - 10px);");
-        div1.appendChild(keyl);
-        div1.appendChild(key);
-        div2.appendChild(valuel);
-        div2.appendChild(value);
-
-        coldiv.appendChild(div1);
-        coldiv.appendChild(div2);
-        form.appendChild(coldiv);
+        var $query_div = $("#query-params");
+        // console.log($query_div);
+        $query_div.append(`<div class="param-card">
+          <div class="row">
+            <div class="col">
+              <input
+                type="text"
+                class="form-control"
+                id="key${ids}"
+                name="key${ids}"
+                placeholder="KEY"
+                aria-label="KEY"
+                required
+              />
+            </div>
+            <div class="col">
+              <input
+                type="text"
+                class="form-control"
+                id="value${ids}"
+                name="key${ids}"
+                placeholder="VALUE"
+                aria-label="VALUE"
+                required
+              />
+            </div>
+          </div>
+          <br />
+        </div>`);
 
         ids += 1;
         // console.log(ids);
       }
       function handleSubmit(e) {
-        // console.log(e);
         e.preventDefault();
-        // console.log(ids);
-        var username = document.getElementById("username").value;
-        var url = "/predict/" + username + "?";
+        var username = $("#username").val().trim();
+        var url = `/predict/${encodeURIComponent(username)}?`;
         for (var i = 0; i < ids; i++) {
-          var key = document.getElementById("key" + i).value;
-          var values = document.getElementById("value" + i).value;
-          url = url + key + "=" + values + "&";
+          var key = $(`#key${i}`).val().trim();
+          var values = $(`#value${i}`).val().trim();
+          url = url.concat(
+            `${encodeURIComponent(key)}=${encodeURIComponent(values)}&`
+          );
         }
-        var pfn = document.getElementById("pfn").value;
-        var pfl = document.getElementById("pfl").value;
-        url += "pred_filename=" + pfn + "&pred_filelocation=" + pfl;
-        // console.log(url);
-        const xhttp = new XMLHttpRequest();
-        xhttp.onload = function () {
-          document.getElementById("demo").innerHTML =
-            "Prediction output is " + this.responseText;
-        };
-        xhttp.open("GET", url);
-        xhttp.send();
+        var pfn = $("#pfn").val().trim();
+        var pfl = $("#pfl").val().trim();
+        url = url.concat(
+          `pred_filename=${encodeURIComponent(
+            pfn
+          )}&pred_filelocation=${encodeURIComponent(pfl)}`
+        );
+        fetch(url).then((res) => {
+          res.text().then((text) => {
+            $("#demo").html(
+              `<h2> Predicted Output Is: </h2> <hr/> <br/> ${text}`
+            );
+          });
+        });
+      }
+      function clearout() {
+        $("demo").html("<h2> Predicted Output Is: </h2>");
       }
     </script>
-    <div class="testbox">
-      <form id="myForm">
-        <div id="main">
-          <div class="banner">
-            <img src="../static/image/bg.jpg" />
-            <h1>PREDICTION</h1>
-          </div>
-          <div class="colums">
-            <div class="item">
-              <label> Username : <span>*</span></label>
-              <input id="username" type="text" name="user" required />
+    <nav class="nav justify-content-center" style="background: #0c0404">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link" style="color: white" href="training">Train </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link active"
+            aria-current="page"
+            href="#"
+            aria-disabled="true"
+            >Predict</a
+          >
+        </li>
+      </ul>
+    </nav>
+    <div
+      class="body-parent"
+      style="
+        min-height: 100vh;
+        /* background: linear-gradient(#f6fbfd, #fff); */
+        background: rgb(238, 174, 202);
+        background: radial-gradient(
+          circle,
+          rgba(0, 0, 0, 1) 0%,
+          rgba(148, 187, 233, 1) 100%
+        );
+        color: white;
+      "
+    >
+      <!-- <hr /> -->
+      <br />
+      <h2 style="text-align: center">ML Framework Solution (PREDICT)</h2>
+      <br />
+      <br />
+      <div class="container-sm" style="padding-bottom: 30px">
+        <form id="myForm">
+          <div class="row mb-3">
+            <label
+              for="username"
+              class="col-sm-2 col-form-label"
+              style="font-size: 18px"
+              >Username <span class="color-red">*</span></label
+            >
+            <div class="col-sm-10">
+              <input
+                type="text"
+                class="form-control"
+                id="username"
+                placeholder="e.g. john_doe"
+                required
+              />
             </div>
           </div>
-          <div class="colums">
-            <div class="item">
-              <label> Prediction File Location<span>*</span></label>
-              <input id="pfl" type="text" name="pfl" value="" />
-            </div>
-            <div class="item">
-              <label> Prediction File name (without .py)<span>*</span></label>
-              <input id="pfn" type="text" name="pfn" value="prediction" />
-            </div>
-          </div>
-          <div class="colums">
-            <div class="item">
-              <label> KEY<span>*</span></label>
-              <input id="key0" type="text" name="key0" required />
-            </div>
-            <div class="item">
-              <label> Value<span>*</span></label>
-              <input id="value0" type="text" name="value0" required />
+          <div class="row mb-3">
+            <label
+              for="pfl"
+              class="col-sm-2 col-form-label"
+              style="font-size: 18px"
+              >Prediction File Location</label
+            >
+            <div class="col-sm-10">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="some/subdirectory"
+                id="pfl"
+              />
             </div>
           </div>
+          <div class="row mb-3">
+            <label
+              for="pfn"
+              class="col-sm-2 col-form-label"
+              style="font-size: 18px"
+              >Prediction File name
+              <span class="color-red">*</span>
+            </label>
+            <div class="col-sm-10">
+              <input
+                type="text"
+                class="form-control"
+                id="pfn"
+                placeholder="prediction"
+                required
+              />
+            </div>
+          </div>
+          <div class="row">
+            <label
+              for="query-params"
+              class="col col-form-label"
+              style="font-size: 18px"
+              >Query Parameters
+            </label>
+          </div>
+          <div id="query-params"></div>
+          <br />
+          <button type="button" class="btn btn-success" onclick="add()">
+            ADD +
+          </button>
+          <br />
+          <div style="text-align: center">
+            <button type="submit" class="btn btn-outline-info btn-lg">
+              Predict!
+            </button>
+          </div>
+          <br />
+          <div style="text-align: center">
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              onclick="clearout()"
+            >
+              Clear Output
+            </button>
+          </div>
+        </form>
+        <br />
+        <div
+          id="demo"
+          style="
+            /* background-color: lightgreen; */
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+            /* color: black; */
+            color: white;
+            min-height: 100px;
+            margin: auto;
+            padding: 20px 20px;
+          "
+        >
+          <h2>Predicted Output Is:</h2>
         </div>
-        <div class="btn-block">
-          <input
-            class="btns"
-            type="button"
-            value="Add Key/Value"
-            onclick="add()"
-          />
-        </div>
-
-        <div class="btn-block">
-          <input class="btns" type="submit" value="Submit" />
-        </div>
-        <label
-          ><p id="demo" style="font-size: large; font-weight: bold"></p
-        ></label>
-      </form>
+      </div>
     </div>
   </body>
   <script>
