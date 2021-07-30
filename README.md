@@ -2,6 +2,10 @@
 
 ## Production level solution for automating training of already developed models
 
+## Architecture Diagram
+
+![alt text](https://github.com/apanjain/ML-Ops/blob/master/architecture-diagram.png?raw=true)
+
 ### Description
 
 - Easy to setup Kubernetes solution which provides a ready to use environment for training complex ML algorithms.
