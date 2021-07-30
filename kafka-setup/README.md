@@ -1,7 +1,7 @@
 # Setting up the KAFKA CLUSTER
 For detail on setting up kafka cluster, you can visit this [github repo](https://github.com/mukesh2966/Kafka-MQ).
 
-Once gone through the details in above repo, we can move to utilize the files present in this repo. 
+Once gone through the details in [kube-demo/setup folder](https://github.com/mukesh2966/Kafka-MQ/tree/main/kube-demo/setup) in the above repo, we can move to utilize the files present in this repo. 
 
 ## ENV Varaibles Setup
 
@@ -11,9 +11,9 @@ Once gone through the details in above repo, we can move to utilize the files pr
   - `ZOO_TLS_CLIENT_TRUSTSTORE_PASSWORD`
   - `PV_CLAIM_NAME_ZOO`
 
-``
+
 Env variables in each of the kafkaD files are in the same format. So, mentioning the list of env. variables for one of them.
-``
+
 - Setup these `ENV variables` inside the `kafkaD0-storage.yaml` file
 
   - `KAFKA_CFG_LISTENERS`
