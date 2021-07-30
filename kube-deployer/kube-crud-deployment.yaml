@@ -74,7 +74,7 @@ spec:
         - name: test-volume
           # This GCE PD must already exist.
           persistentVolumeClaim:
-            claimName: myclaim
+            claimName: CLAIM_NAME
         - name: cert-config
           configMap:
             name: kafka-public-key
