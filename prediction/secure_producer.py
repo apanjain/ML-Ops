@@ -52,6 +52,6 @@ def run_producer(msg_value):
 
 
 if __name__ == '__main__':
-    message = {"train_file_location": TRAIN_FILE_LOCATION,
+    message = {"train_file_location": ".", "train_file_name": TRAIN_FILE_LOCATION,
                "ml_username": ML_USERNAME, }
     run_producer(message)
